@@ -1,15 +1,24 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Bookish.Models;
+using Bookish.Database;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Bookish.Controllers;
 
 public class BookishController : Controller
 {
-    public IActionResult Index(string BookTitle)
+    private readonly BookishDbContext _context;
+
+    public BookishController(BookishDbContext context)
     {
-        ViewData["BookTitle"] = BookTitle;
-        return View();
+        _context = context;
+    }
+    public async Task<IActionResult> Index()
+    {
+        List<Book> books = (await _context.Book.ToListAsync()).Select(book => new Book(book.Id, book.Title, book.Author)).ToList();
+        return View(books);
     }
 
     public IActionResult Privacy()
