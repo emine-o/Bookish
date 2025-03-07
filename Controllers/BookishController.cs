@@ -17,7 +17,7 @@ public class BookishController : Controller
     }
     public async Task<IActionResult> Index()
     {
-        List<Book> books = (await _context.Book.ToListAsync()).Select(book => new Book(book.Id, book.Title, book.Author)).ToList();
+        List<Book> books = (await _context.Book.ToListAsync()).ToList();
         return View(books);
     }
 
@@ -47,19 +47,21 @@ public class BookishController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditBook(int id, [Bind("Id,Title,Author")] Book book)
+    public async Task<IActionResult> EditBook(int id, Book book, [Bind("Title,Author")] Book bookToUpdate)
     {
         if (id != book.Id)
         {
             return NotFound();
         }
 
+        Console.WriteLine($"{book.Id}, {book.Title}, {book.Author}");
         if (ModelState.IsValid)
         {
-            _context.Update(book);
+            _context.Book.Update(bookToUpdate);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        Console.WriteLine("If statement failed.");
         return View(book);
     }
 

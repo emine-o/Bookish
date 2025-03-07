@@ -8,6 +8,7 @@ public class Book
 
     public ICollection<Item> Items { get; set; }
 
+    public Book() {}
     public Book(int id, string title, string author)
     {
         Id = id;
