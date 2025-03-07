@@ -1,7 +1,10 @@
+using Bookish.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<BookishDbContext>();
 
 var app = builder.Build();
 
