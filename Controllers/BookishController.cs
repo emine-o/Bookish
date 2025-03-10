@@ -43,18 +43,18 @@ public class BookishController : Controller
             return View(book);
         }
 
-        var books = from aBook in _context.Book
-            select aBook;
+        // var books = from aBook in _context.Book
+        //     select aBook;
         
-        Book? duplicateBook = books.Where(aBook => aBook.Title == book.Title && aBook.Author == book.Author).FirstOrDefault();
-        if (duplicateBook == null)
+        // Book? duplicateBook = books.Where(aBook => aBook.Title == book.Title && aBook.Author == book.Author).FirstOrDefault();
+        // if (duplicateBook == null)
         {
             _context.Book.Add(new Book(book.Title, book.Author));
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["ErrorMessage"] = "Sorry, you can't add this book because it already exists in the catalogue.";
-        return View(book);
+        // ViewData["ErrorMessage"] = "Sorry, you can't add this book because it already exists in the catalogue.";
+        // return View(book);
     }
 
     // GET: Bookish/EditBook/<int: id>
