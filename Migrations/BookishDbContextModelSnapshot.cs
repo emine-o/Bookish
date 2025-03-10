@@ -16,7 +16,6 @@ namespace Bookish.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
                 .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -32,18 +31,13 @@ namespace Bookish.Migrations
 
                     b.Property<string>("Author")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .UseCollation("case_insensitive");
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .UseCollation("case_insensitive");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Title", "Author")
-                        .IsUnique();
 
                     b.ToTable("Book");
                 });
