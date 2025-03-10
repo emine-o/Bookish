@@ -40,21 +40,25 @@ public class BookishController : Controller
     {
         if (!ModelState.IsValid)
         {
-            //Add some error message, like "missing title/author/"
             return View(book);
         }
 
         Console.WriteLine($"{book.Title}, {book.Author}");
-        //check if author exists && title exist => if True, then "Cannot create new book" 
-        // if (_context.Book.Where(books => books.Title == book.Title).FirstOrDefault())
-        //else add new book.
+        var books = from aBook in _context.Book
+            select aBook;
         
-        _context.Book.Add(new Book(book.Title, book.Author));
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        Book? duplicateBook = books.Where(aBook => aBook.Title == book.Title && aBook.Author == book.Author).FirstOrDefault();
+        if (duplicateBook == null)
+        {
+            _context.Book.Add(new Book(book.Title, book.Author));
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        ViewData["ErrorMessage"] = "Sorry, you can't add this book because it already exists in the catalogue.";
+        return View(book);
     }
 
-    // GET: Bookish/Edit/<int: id>
+    // GET: Bookish/EditBook/<int: id>
     public async Task<IActionResult> EditBook(int? id)
     {
         if (id == null)
@@ -70,9 +74,7 @@ public class BookishController : Controller
         return View(book);
     }
     
-    // POST: Bookish/Edit/<int: id>
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    // POST: Bookish/EditBook/<int: id>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditBook(int id, [Bind("Id,Title,Author")] Book book)
@@ -82,14 +84,12 @@ public class BookishController : Controller
             return NotFound();
         }
 
-        Console.WriteLine($"{book.Id}, {book.Title}, {book.Author}");
         if (ModelState.IsValid)
         {
             _context.Book.Update(book);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        Console.WriteLine("If statement failed.");
         return View(book);
     }
 
