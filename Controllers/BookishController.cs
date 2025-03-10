@@ -43,7 +43,6 @@ public class BookishController : Controller
             return View(book);
         }
 
-        Console.WriteLine($"{book.Title}, {book.Author}");
         var books = from aBook in _context.Book
             select aBook;
         
@@ -86,10 +85,18 @@ public class BookishController : Controller
 
         if (ModelState.IsValid)
         {
-            _context.Book.Update(book);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var books = from aBook in _context.Book
+                select aBook;
+        
+            Book? duplicateBook = books.Where(aBook => aBook.Title == book.Title && aBook.Author == book.Author).FirstOrDefault();
+            if (duplicateBook == null)
+            {
+                _context.Book.Update(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
         }
+        ViewData["ErrorMessage"] = "Sorry, you can't add this book because it already exists in the catalogue.";
         return View(book);
     }
 
