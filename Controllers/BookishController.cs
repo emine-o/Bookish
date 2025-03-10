@@ -99,7 +99,19 @@ public class BookishController : Controller
         ViewData["ErrorMessage"] = "Sorry, you can't add this book because it already exists in the catalogue.";
         return View(book);
     }
+    // public async Task<IActionResult> DeleteBook(int? id)
+    // {
+    //     if (id == null)
+    //     {
+    //         return NotFound();
+    //     }
 
+    //     var book = await _context.Book.FindAsync(id);
+    //     if (book == null)
+    //     {
+    //         return NotFound();
+    //     }
+    // }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
